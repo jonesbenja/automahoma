@@ -1,0 +1,1 @@
+java -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=4000,suspend=n -jar bin/felix.jar clean

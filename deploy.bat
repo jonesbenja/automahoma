@@ -1,0 +1,1 @@
+copy WebService\target\WebService-1.0-SNAPSHOT.jar felix-framework-4.4.0\bundle
