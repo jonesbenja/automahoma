@@ -1,29 +1,29 @@
-div {
-  width: 200px;
+.menu {
+  width: 400px;
 }
  
-h2 {
+.menu h2 {
   font: 400 40px/1.5 Helvetica, Verdana, sans-serif;
   margin: 0;
   padding: 0;
 }
  
-ul {
+.menu ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
  
-li {
+.menu ul li {
   font: 400 20px/1.5 Helvetica, Verdana, sans-serif;
   border-bottom: 1px solid #ccc;
 }
  
-li:last-child {
+.menu ul li:last-child {
   border: none;
 }
  
-li a {
+.menu ul li a {
   text-decoration: none;
   color: #000;
   display: block;
@@ -36,7 +36,7 @@ li a {
   transition: font-size 0.3s ease, background-color 0.3s ease;
 }
  
-li a:hover {
+.menu ul li a:hover {
   font-size: 30px;
   background: #f6f6f6;
 }
