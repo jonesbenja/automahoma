@@ -1,0 +1,20 @@
+.thermometer-outer {
+    background: #c4f0ff;
+    border: 1px solid #c4c4c4;
+    border-radius: 3px;
+    display: inline-block;
+}
+.thermometer-outer-v {
+    height: 200px;
+    width: 20px;
+}
+.thermometer-inner {
+    background: #3f83f7;
+}
+.thermometer-inner-v {
+    width: 20px;
+}
+.label-thermometer {
+    float: left;
+    padding: 10px;
+}
