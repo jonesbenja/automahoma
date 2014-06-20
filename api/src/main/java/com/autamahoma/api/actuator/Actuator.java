@@ -2,25 +2,25 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.automahoma.api.sensor;
+package com.autamahoma.api.actuator;
 
 /**
  *
  * @author SESA244648
  */
 public class Actuator {
-    private String system;
+    private ActuationSystem system;
     private ActuatorState state;
 
-    public Actuator(String system) {
+    public Actuator(ActuationSystem system) {
         this.system = system;
     }
     
-    public String getSystem() {
+    public ActuationSystem getSystem() {
         return system;
     }
 
-    public void setSystem(String system) {
+    public void setSystem(ActuationSystem system) {
         this.system = system;
     }
 

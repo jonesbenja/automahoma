@@ -10,8 +10,8 @@ package com.automahoma.api.sensor;
  */
 public class EnvironmentalSensor {
     private String location;
-    private float temperature;
-    private float humidity;
+    private MeasuredQuantity measuredQuantity;
+    private float value;
    
     public String getLocation() {
         return location;
@@ -21,20 +21,19 @@ public class EnvironmentalSensor {
         this.location = location;
     }
 
-    public float getTemperature() throws SensorReadException {
-        return temperature;
+    public MeasuredQuantity getMeasuredQuantity() {
+        return measuredQuantity;
     }
-
-    public void setTemperature(float temperature) {
-        this.temperature = temperature;
-    }
-
-    public float getHumidity() throws SensorReadException {
-        return humidity;
-    }
-
-    public void setHumidity(float humidity) {
-        this.humidity = humidity;
-    } 
     
+    public void setMeasuredQuantity(MeasuredQuantity measuredQuantity) {
+        this.measuredQuantity = measuredQuantity;
+    }
+
+    public float getValue() throws SensorReadException {
+        return value;
+    }
+    
+    public void setValue(float value) {
+        this.value = value;
+    }
 }

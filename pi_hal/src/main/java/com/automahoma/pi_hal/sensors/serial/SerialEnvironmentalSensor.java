@@ -13,49 +13,26 @@ import com.automahoma.api.sensor.SensorReadException;
  */
 public class SerialEnvironmentalSensor extends EnvironmentalSensor {
     
-    private static final int SAMPLE_PERIOD = 1000;
-    
     private final SerialSensorManager serialSensorManager;
     
-    private long lastRead;
-    private final int temperatureChannel;
-    private final int humidityChannel;
+    private final int channel;
     
     public SerialEnvironmentalSensor(SerialSensorManager serialSensorManager, 
-            int temperatureChannel, int humidityChannel) {
+            int channel) {
         this.serialSensorManager = serialSensorManager;
-        this.temperatureChannel = temperatureChannel;
-        this.humidityChannel = humidityChannel;
-        lastRead = 0;
+        this.channel = channel;
     }
     
     @Override
-    public float getHumidity() throws SensorReadException {
+    public float getValue() throws SensorReadException {
         readSensors();
     
-        return super.getHumidity();
-    }
-    
-    @Override
-    public float getTemperature() throws SensorReadException {
-        readSensors();
-        
-        return super.getTemperature();
-    }
+        return super.getValue();
+    }    
     
     private void readSensors() throws SensorReadException {
-        long now = System.currentTimeMillis();
-        
-        long delta = now - lastRead;
-        
-        if (delta > SAMPLE_PERIOD) {
-            float[] sensorReadings = serialSensorManager.readSensors();
-            
-            super.setTemperature(sensorReadings[temperatureChannel]);
-            super.setHumidity(sensorReadings[humidityChannel]);
-            
-        }
-        
-        lastRead = now;
+        float[] sensorReadings = serialSensorManager.readSensors();
+
+        super.setValue(sensorReadings[channel]);
     }
 }

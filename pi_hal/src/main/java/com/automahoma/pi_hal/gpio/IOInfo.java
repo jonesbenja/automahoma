@@ -4,18 +4,20 @@
  */
 package com.automahoma.pi_hal.gpio;
 
+import com.autamahoma.api.actuator.ActuationSystem;
+
 /**
  *
  * @author SESA244648
  */
 public class IOInfo {
 
-    private String function;
+    private ActuationSystem system;
     private int pin;
     private IOMode mode;
     
-    public void setFunction(String function) {
-        this.function = function;
+    public void setSystem(ActuationSystem system) {
+        this.system = system;
     }
 
     public void setPin(int pin) {
@@ -26,8 +28,8 @@ public class IOInfo {
         this.mode = mode;
     }
 
-    public String getFunction() {
-        return function;
+    public ActuationSystem getSystem() {
+        return system;
     }
 
     public int getPin() {

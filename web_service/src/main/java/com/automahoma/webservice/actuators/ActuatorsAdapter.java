@@ -4,10 +4,11 @@
  */
 package com.automahoma.webservice.actuators;
 
-import com.automahoma.api.sensor.ActuationException;
-import com.automahoma.api.sensor.Actuator;
-import com.automahoma.api.sensor.ActuatorState;
-import com.automahoma.api.sensor.ActuatorsService;
+import com.autamahoma.api.actuator.ActuationException;
+import com.autamahoma.api.actuator.ActuationSystem;
+import com.autamahoma.api.actuator.Actuator;
+import com.autamahoma.api.actuator.ActuatorState;
+import com.autamahoma.api.actuator.ActuatorsService;
 import com.automahoma.webservice.TrackedServices;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
@@ -42,7 +43,7 @@ public class ActuatorsAdapter {
         for (Actuator actuator : actuators) {
             JSONObject actuatorJson = new JSONObject();
             
-            actuatorJson.put("system", actuator.getSystem());
+            actuatorJson.put("system", actuator.getSystem().toString());
             
             boolean active = actuator.getState() == ActuatorState.On;
             actuatorJson.put("active", active);
@@ -69,7 +70,10 @@ public class ActuatorsAdapter {
         for (Object actuatorSettingObj : actuatorsSettings) {
             JSONObject actuatorSettingJson = (JSONObject)actuatorSettingObj;
             
-            String system = (String)actuatorSettingJson.get("system");
+            String systemStr = (String)actuatorSettingJson.get("system");
+            ActuationSystem system = Enum.valueOf(ActuationSystem.class, 
+                    systemStr);
+            
             Boolean active = (Boolean)actuatorSettingJson.get("active");
             
             ActuatorState state = active ? ActuatorState.On : ActuatorState.Off;

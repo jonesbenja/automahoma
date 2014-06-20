@@ -45,8 +45,8 @@ public class EnvironmentalSensorsAdapter {
                 JSONObject sensorJson = new JSONObject();
                 
                 sensorJson.put("location", sensor.getLocation());
-                sensorJson.put("temperature", sensor.getTemperature());
-                sensorJson.put("humidity", sensor.getHumidity());            
+                sensorJson.put("value", sensor.getValue());
+                sensorJson.put("quantity", sensor.getMeasuredQuantity().toString());            
                 sensorsJson.add(sensorJson);
                 
             } catch (SensorReadException ex) {

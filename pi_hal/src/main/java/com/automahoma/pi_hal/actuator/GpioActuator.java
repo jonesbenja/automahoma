@@ -4,9 +4,10 @@
  */
 package com.automahoma.pi_hal.actuator;
 
-import com.automahoma.api.sensor.ActuatorState;
-import com.automahoma.api.sensor.Actuator;
-import com.automahoma.api.sensor.ActuationException;
+import com.autamahoma.api.actuator.ActuationException;
+import com.autamahoma.api.actuator.ActuationSystem;
+import com.autamahoma.api.actuator.Actuator;
+import com.autamahoma.api.actuator.ActuatorState;
 import com.automahoma.pi_hal.gpio.GpioController;
 import com.automahoma.pi_hal.gpio.IOConfigException;
 import com.automahoma.pi_hal.gpio.IOMode;
@@ -20,7 +21,7 @@ public class GpioActuator extends Actuator {
     private final GpioController controller;
     private boolean activeHigh;
     
-    public GpioActuator(GpioController controller, int pin, String system, 
+    public GpioActuator(GpioController controller, int pin, ActuationSystem system, 
             ActuatorState state, boolean activeHigh) throws ActuationException {
         
         super(system);

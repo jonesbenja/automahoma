@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.automahoma.api.sensor;
+package com.autamahoma.api.actuator;
 
 /**
  *

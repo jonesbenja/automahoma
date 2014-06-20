@@ -6,7 +6,7 @@
 
 package com.automahoma.webservice;
 
-import com.automahoma.api.sensor.ActuatorsService;
+import com.autamahoma.api.actuator.ActuatorsService;
 import com.automahoma.api.sensor.ContactSensorsService;
 import com.automahoma.api.sensor.EnvironmentalSensorsService;
 

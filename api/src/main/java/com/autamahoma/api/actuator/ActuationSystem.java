@@ -4,17 +4,16 @@
  * and open the template in the editor.
  */
 
-package com.automahoma.api.sensor;
-
+package com.autamahoma.api.actuator;
 
 /**
  *
  * @author Tiffany
  */
-public interface ActuatorsService {
-
-    Actuator[] getActuators();
-
-    void setActuator(String system, ActuatorState state) throws ActuationException;
-    
+public enum ActuationSystem {
+    HVAC_Compressor,
+    HVAC_Fan,
+    HVAC_Heat,
+    Fan_High,
+    Fan_Low
 }

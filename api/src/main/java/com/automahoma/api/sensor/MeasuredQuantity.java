@@ -10,9 +10,8 @@ package com.automahoma.api.sensor;
  *
  * @author Tiffany
  */
-public interface EnvironmentalSensorsService {
-
-    EnvironmentalSensor[] getEnvironmentalSensors();
-    
-    EnvironmentalSensor getEnvironmentalSensor(String location, MeasuredQuantity quantity);
+public enum MeasuredQuantity {
+    Humidity,
+    Temperature,
+    Illumination
 }

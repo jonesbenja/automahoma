@@ -1,6 +1,6 @@
 package com.automahoma.test_hal;
 
-import com.automahoma.api.sensor.ActuatorsService;
+import com.autamahoma.api.actuator.ActuatorsService;
 import com.automahoma.api.sensor.ContactSensorsService;
 import com.automahoma.api.sensor.EnvironmentalSensorsService;
 import org.osgi.framework.BundleActivator;

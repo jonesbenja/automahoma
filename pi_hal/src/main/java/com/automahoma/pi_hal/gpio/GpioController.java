@@ -4,6 +4,7 @@
  */
 package com.automahoma.pi_hal.gpio;
 
+import com.autamahoma.api.actuator.ActuationSystem;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
@@ -17,7 +18,7 @@ import java.util.logging.Logger;
  */
 public class GpioController {
     
-    private final Map<String, IOInfo> ioInfoByFunction;
+    private final Map<ActuationSystem, IOInfo> ioInfoBySystem;
     private final Map<Integer, IOInfo> ioInfoByPin;
     
     private final IOInterop systemIOInterop;
@@ -25,19 +26,19 @@ public class GpioController {
     public GpioController(IOInterop systemIOInterop) {
         this.systemIOInterop = systemIOInterop;
         
-        ioInfoByFunction = new HashMap();
+        ioInfoBySystem = new HashMap();
         ioInfoByPin = new HashMap();
     }
     
-    public void reserve(String function, int pin, IOMode mode) throws IOConfigException {
-        if (ioInfoByFunction.containsKey(function)) {
-            throw new IOConfigException("Function already defined with name " + function);
+    public void reserve(ActuationSystem system, int pin, IOMode mode) throws IOConfigException {
+        if (ioInfoBySystem.containsKey(system)) {
+            throw new IOConfigException("Function already defined with name " + system.toString());
         }
         
         if (ioInfoByPin.containsKey(pin)) {
             throw new IOConfigException("Pin " + pin
                     + " already defined for function" 
-                    + ioInfoByPin.get(pin).getFunction());
+                    + ioInfoByPin.get(pin).getSystem());
         }
         
         if (!systemIOInterop.isExported(pin)) {
@@ -55,21 +56,21 @@ public class GpioController {
         }
         
         IOInfo info = new IOInfo();
-        info.setFunction(function);
+        info.setSystem(system);
         info.setPin(pin);
         info.setMode(mode);
         
-        ioInfoByFunction.put(function, info);
+        ioInfoBySystem.put(system, info);
         ioInfoByPin.put(pin, info);
     }
     
     public void release(String function) throws IOConfigException {
-        IOInfo info = ioInfoByFunction.get(function);
+        IOInfo info = ioInfoBySystem.get(function);
         if (info == null) {
             throw new IOConfigException("Function " + function + " not defined");
         }
         
-        ioInfoByFunction.remove(function);
+        ioInfoBySystem.remove(function);
         ioInfoByPin.remove(info.getPin());
         
         try {
@@ -80,7 +81,7 @@ public class GpioController {
     }
     
     public IOValue getValue(String function) throws IOConfigException {
-        IOInfo info = ioInfoByFunction.get(function);
+        IOInfo info = ioInfoBySystem.get(function);
         if (info == null) {
             throw new IOConfigException("Function " + function + " not defined");
         }
@@ -99,10 +100,10 @@ public class GpioController {
         }
     }
     
-    public void setValue(String function, IOValue value) throws IOConfigException {
-        IOInfo info = ioInfoByFunction.get(function);
+    public void setValue(ActuationSystem system, IOValue value) throws IOConfigException {
+        IOInfo info = ioInfoBySystem.get(system);
         if (info == null) {
-            throw new IOConfigException("Function " + function + " not defined");
+            throw new IOConfigException("Function " + system.toString() + " not defined");
         }
 
         if (info.getIOMode() == IOMode.Input) {

@@ -5,17 +5,22 @@
 package com.automahoma.webservice;
 
 
-import com.automahoma.api.sensor.ActuationException;
-import com.automahoma.api.sensor.ActuatorsService;
-import com.automahoma.api.sensor.ContactSensorsService;
-import com.automahoma.api.sensor.EnvironmentalSensorsService;
+import com.autamahoma.api.actuator.ActuationException;
+import com.autamahoma.api.actuator.ActuationSystem;
+import com.autamahoma.api.actuator.Actuator;
+import com.automahoma.api.sensor.EnvironmentalSensor;
+import com.automahoma.api.sensor.MeasuredQuantity;
 import com.automahoma.webservice.actuators.ActuatorsAdapter;
 import com.automahoma.webservice.contact_sensors.ContactSensorsAdapter;
 import com.automahoma.webservice.environmental_sensors.EnvironmentalSensorsAdapter;
 import com.automahoma.webservice.profiles.ProfilesAdapter;
 import com.automahoma.webservice.profiles.ProfilesService;
+import com.automahoma.webservice.strategies.CompareControlStrategy;
+import com.automahoma.webservice.strategies.StrategiesAdapter;
+import com.automahoma.webservice.strategies.StrategiesService;
 import com.automahoma.webservice.weather.WeatherAdapter;
 import com.automahoma.webservice.weather.WeatherService;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,13 +39,21 @@ import org.json.simple.parser.ParseException;
  */
 public class WebService extends HttpServlet {
     
+    //False uses source code for web resources. 
+    //Change to true when deploying to reference resources in JAR
+    private static final boolean JAR_MODE = false;
+    private static final String PROJECT_DIR = "c:/Users/Tiffany/automahoma/";
+    private static final String EXPLODED_DIR = PROJECT_DIR + "web_service/src/main/resources/";
+    
     private final WeatherAdapter weatherAdapter;
     private final ProfilesAdapter profilesAdapter;
     private final ActuatorsAdapter actuatorsAdapter;
     private final EnvironmentalSensorsAdapter environmentalSensorsAdapter;
     private final ContactSensorsAdapter contactSensorsAdapter;
+    private final StrategiesAdapter strategiesAdapter;
     
-    public WebService(TrackedServices trackedServices) throws ActuationException, FileNotFoundException {
+    public WebService(TrackedServices trackedServices)
+            throws ActuationException, FileNotFoundException {
         
         final WeatherService weatherService = new WeatherService();
         weatherAdapter = new WeatherAdapter(weatherService);
@@ -55,6 +68,22 @@ public class WebService extends HttpServlet {
         
         contactSensorsAdapter = new ContactSensorsAdapter(
                 trackedServices);
+        
+        final EnvironmentalSensor insideTemperatureSensor = trackedServices
+                .getEnvironmentalSensorsService().getEnvironmentalSensor(
+                        "inside", MeasuredQuantity.Temperature);
+        
+        final Actuator hvacCompressorActuator = trackedServices
+                .getActuatorsService().getActuator(ActuationSystem.HVAC_Compressor);
+        
+        final CompareControlStrategy compareControlStrategy 
+                = new CompareControlStrategy(insideTemperatureSensor,
+                        hvacCompressorActuator);
+        
+        final StrategiesService strategiesService = new StrategiesService();
+        strategiesService.addStrategy(compareControlStrategy);
+        
+        strategiesAdapter = new StrategiesAdapter(strategiesService);
     }
     
     @Override
@@ -84,6 +113,8 @@ public class WebService extends HttpServlet {
                 } else if (pathList[1].equals("actuators")) {
                     actuatorsAdapter.doPut(req, resp);
                     
+                } else if (pathList[1].equals("strategies")) {
+                    strategiesAdapter.doPost(req);
                 }
                 
             } catch (ParseException ex) {
@@ -98,10 +129,21 @@ public class WebService extends HttpServlet {
         }
     }
     
+    private InputStream getResource(String path) throws FileNotFoundException {
+        InputStream is;
+        if (JAR_MODE) {
+            is = this.getClass().getClassLoader()
+                .getResourceAsStream(path);
+        } else {
+            is = new FileInputStream(EXPLODED_DIR + path);
+        }
+        return is;
+    }
+    
     private void doGetStaticContent(String path, HttpServletResponse resp)
             throws IOException {
-        InputStream is = this.getClass().getClassLoader()
-                .getResourceAsStream(path);
+        
+        InputStream is = getResource(path);
         
         int fileNameIndex = path.lastIndexOf("/");
         String fileName = path.substring(fileNameIndex);
@@ -139,6 +181,8 @@ public class WebService extends HttpServlet {
                 environmentalSensorsAdapter.sendEnvironmentalSensors(resp);
             } else if (pathList[1].equals("contactSensors")) {
                 contactSensorsAdapter.sendContactSensors(resp);
+            } else if (pathList[1].equals("strategies")) {
+                strategiesAdapter.sendStrategies(resp);
             } else {
                 valid = false;
             } 
