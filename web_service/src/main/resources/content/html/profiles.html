@@ -39,5 +39,68 @@ and open the template in the editor.
             </tbody>
         </table>
         
+        <br>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="7">Weekly Calendar</th>
+                </tr>
+                <tr data-bind="foreach: weekDays">
+                    <th data-bind="text: dayName"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-bind="foreach: weekDays ">
+                    <td>
+                        <ul data-bind="foreach: entries" style="list-style-type: none; padding:0; margin:0;">
+                            <li>
+                                <span><input type="checkbox" data-bind="checked: selected"></span>
+                                <span data-bind="text: profile"></span>
+                                <span>(</span>
+                                <span data-bind="text: startTime"></span>
+                                <span>-</span>
+                                <span data-bind="text: endTime"></span>
+                                <span>)</span>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="7">
+                        <button data-bind="click: removeEntries">Remove</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <br>
+        
+        <table>
+            <thead>
+                <tr><th>Profile Name</th><th>Day</th><th>Start Time</th><th>End Time</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <select data-bind="options: profileNames, value: selectedProfileName"></select>
+                    </td>
+                    <td>
+                        <select data-bind="options: dayNames, value: selectedDay"></select>        
+                    </td>
+                    <td>
+                        <select data-bind="options: hoursOfDay, value: selectedStartTime"></select>
+                    </td>
+                    <td>
+                        <select data-bind="options: hoursOfDay, value: selectedEndTime"></select>        
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" align="center">
+                        <button style="float: right" data-bind="click: updateCalendar">Update</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>        
     </body>
 </html>

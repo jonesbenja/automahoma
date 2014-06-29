@@ -52,15 +52,15 @@ public class ProfilesAdapter {
             JSONObject profileJson = (JSONObject)profilesJson.get(i);
             
             profiles[i] = new Profile();
-            float maximumTemperature = Float.parseFloat((String)profileJson
-                    .get("maximum_temperature"));
+            float maximumTemperature = Float.parseFloat(profileJson
+                    .get("maximum_temperature").toString());
             profiles[i].setMaximumTemperature(maximumTemperature);
             
-            float minimumTemperature = Float.parseFloat((String)profileJson
-                    .get("minimum_temperature"));
+            float minimumTemperature = Float.parseFloat(profileJson
+                    .get("minimum_temperature").toString());
             profiles[i].setMinimumTemperature(minimumTemperature);
             
-            profiles[i].setName((String)profileJson.get("name"));
+            profiles[i].setName(profileJson.get("name").toString());
         }
         
         profilesService.setProfiles(profiles);        

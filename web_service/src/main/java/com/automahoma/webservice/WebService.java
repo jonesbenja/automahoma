@@ -13,9 +13,12 @@ import com.automahoma.api.sensor.MeasuredQuantity;
 import com.automahoma.webservice.actuators.ActuatorsAdapter;
 import com.automahoma.webservice.contact_sensors.ContactSensorsAdapter;
 import com.automahoma.webservice.environmental_sensors.EnvironmentalSensorsAdapter;
+import com.automahoma.webservice.profiles.CalendarAdapter;
+import com.automahoma.webservice.profiles.CalendarService;
 import com.automahoma.webservice.profiles.ProfilesAdapter;
 import com.automahoma.webservice.profiles.ProfilesService;
 import com.automahoma.webservice.strategies.CompareControlStrategy;
+import com.automahoma.webservice.strategies.CompareStrategyActivation;
 import com.automahoma.webservice.strategies.StrategiesAdapter;
 import com.automahoma.webservice.strategies.StrategiesService;
 import com.automahoma.webservice.weather.WeatherAdapter;
@@ -51,12 +54,16 @@ public class WebService extends HttpServlet {
     private final EnvironmentalSensorsAdapter environmentalSensorsAdapter;
     private final ContactSensorsAdapter contactSensorsAdapter;
     private final StrategiesAdapter strategiesAdapter;
+    private final CalendarAdapter calendarAdapter;
     
     public WebService(TrackedServices trackedServices)
             throws ActuationException, FileNotFoundException {
         
         final WeatherService weatherService = new WeatherService();
         weatherAdapter = new WeatherAdapter(weatherService);
+        
+        final CalendarService calendarService = new CalendarService();
+        calendarAdapter = new CalendarAdapter(calendarService);
         
         final ProfilesService profilesService = new ProfilesService();
         profilesAdapter = new ProfilesAdapter(profilesService);
@@ -73,15 +80,25 @@ public class WebService extends HttpServlet {
                 .getEnvironmentalSensorsService().getEnvironmentalSensor(
                         "inside", MeasuredQuantity.Temperature);
         
-        final Actuator hvacCompressorActuator = trackedServices
+        final Actuator compressorActuator = trackedServices
                 .getActuatorsService().getActuator(ActuationSystem.HVAC_Compressor);
         
-        final CompareControlStrategy compareControlStrategy 
-                = new CompareControlStrategy(insideTemperatureSensor,
-                        hvacCompressorActuator);
+        final CompareControlStrategy coolingStrategy 
+                = new CompareControlStrategy("Thermostat Compressor Cooling", 
+                        insideTemperatureSensor, compressorActuator, 
+                        CompareStrategyActivation.WhenAbove);
+        
+        final Actuator gasActuator = trackedServices
+                .getActuatorsService().getActuator(ActuationSystem.HVAC_Heat);
+        
+        final CompareControlStrategy heatingStrategy
+                = new CompareControlStrategy("Thermostat Gas Heating",
+                        insideTemperatureSensor, gasActuator,
+                        CompareStrategyActivation.WhenBelow);
         
         final StrategiesService strategiesService = new StrategiesService();
-        strategiesService.addStrategy(compareControlStrategy);
+        strategiesService.addStrategy(coolingStrategy);
+        strategiesService.addStrategy(heatingStrategy);
         
         strategiesAdapter = new StrategiesAdapter(strategiesService);
     }
@@ -115,6 +132,10 @@ public class WebService extends HttpServlet {
                     
                 } else if (pathList[1].equals("strategies")) {
                     strategiesAdapter.doPost(req);
+                    
+                } else if (pathList[1].equals("calendar")) {
+                    calendarAdapter.doPost(req);
+                    
                 }
                 
             } catch (ParseException ex) {
@@ -183,6 +204,8 @@ public class WebService extends HttpServlet {
                 contactSensorsAdapter.sendContactSensors(resp);
             } else if (pathList[1].equals("strategies")) {
                 strategiesAdapter.sendStrategies(resp);
+            } else if (pathList[1].equals("calendar")) {
+                calendarAdapter.sendCalendar(resp);
             } else {
                 valid = false;
             } 

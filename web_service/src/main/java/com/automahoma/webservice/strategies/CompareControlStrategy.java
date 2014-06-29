@@ -12,14 +12,22 @@ public class CompareControlStrategy implements Strategy {
     private boolean active;
     
     private float hysteresis;
+    
+    private final String name;
+    private final EnvironmentalSensor sensor;
+    private final Actuator actuator;
+    private final CompareStrategyActivation activation;
    
-    public CompareControlStrategy(EnvironmentalSensor sensor,
-            Actuator actuator) {
-        
+    public CompareControlStrategy(String name, EnvironmentalSensor sensor,
+            Actuator actuator, CompareStrategyActivation activation) {
+        this.name = name;
+        this.sensor = sensor;
+        this.actuator = actuator;
+        this.activation = activation;
     }
     
     public String getName() {
-        return "Temperature Control";
+        return name;
     }
 
     public void setActive(boolean active) {
